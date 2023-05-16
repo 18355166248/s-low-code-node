@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import Joi from 'joi';
-import dotenv from 'dotenv';
+import * as Joi from 'joi';
+import * as dotenv from 'dotenv';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { connectionParams } from 'ormconfig';
 import { LogsModule } from './logs/logs.module';
