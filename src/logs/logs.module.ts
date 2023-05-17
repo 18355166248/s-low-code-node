@@ -6,7 +6,7 @@ import { utilities } from 'nest-winston';
 import { LogEnum } from 'src/enum/config.enum';
 import 'winston-daily-rotate-file';
 
-function createDailyRotateTrasnport(level: string, filename: string) {
+function createDailyRotateTransport(level: string, filename: string) {
   return new winston.transports.DailyRotateFile({
     level,
     dirname: 'logs',
@@ -27,14 +27,14 @@ function createDailyRotateTrasnport(level: string, filename: string) {
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const timestamp = configService.get(LogEnum.TIMESTAMP) === 'true';
-        const conbine = [];
+        const combine = [];
         if (timestamp) {
-          conbine.push(winston.format.timestamp());
+          combine.push(winston.format.timestamp());
         }
-        conbine.push(utilities.format.nestLike());
+        combine.push(utilities.format.nestLike());
         const consoleTransports = new winston.transports.Console({
           level: configService.get(LogEnum.LOG_LEVEL) || 'info',
-          format: winston.format.combine(...conbine),
+          format: winston.format.combine(...combine),
         });
 
         return {
@@ -42,8 +42,8 @@ function createDailyRotateTrasnport(level: string, filename: string) {
             consoleTransports,
             ...(configService.get(LogEnum.LOG_ON)
               ? [
-                  createDailyRotateTrasnport('info', 'application'),
-                  createDailyRotateTrasnport('warn', 'error'),
+                  createDailyRotateTransport('info', 'application'),
+                  createDailyRotateTransport('warn', 'error'),
                 ]
               : []),
           ],

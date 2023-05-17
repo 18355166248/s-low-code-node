@@ -23,7 +23,7 @@ export const setupApp = (app: INestApplication) => {
   );
 
   // helmet头部安全
-  app.use(helmet);
+  app.use(helmet());
 
   // 限流
   app.use(

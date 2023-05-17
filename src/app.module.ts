@@ -4,6 +4,10 @@ import * as Joi from 'joi';
 import * as dotenv from 'dotenv';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { connectionParams } from 'ormconfig';
+import { UserModule } from './user/user.module';
+import { RolesModule } from './roles/roles.module';
+import { MenusModule } from './menus/menus.module';
+import { AuthModule } from './auth/auth.module';
 import { LogsModule } from './logs/logs.module';
 
 const schema = Joi.object({
@@ -48,6 +52,10 @@ const schema = Joi.object({
     }),
     TypeOrmModule.forRoot(connectionParams),
     LogsModule,
+    UserModule,
+    RolesModule,
+    MenusModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
