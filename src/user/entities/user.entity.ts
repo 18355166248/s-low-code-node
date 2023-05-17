@@ -1,6 +1,13 @@
 import { Exclude } from 'class-transformer';
 import { Logs } from 'src/logs/entities/log.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from 'src/roles/entities/role.entity';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -16,4 +23,7 @@ export class User {
 
   @OneToMany(() => Logs, (logs) => logs.user)
   logs: Logs[];
+
+  @ManyToMany(() => Role, (role) => role.users)
+  roles: Role[];
 }
