@@ -4,6 +4,7 @@ import { LogEnum } from './enum/config.enum';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { TypeormFilter } from './filters/typeorm.filter';
 
 export const setupApp = (app: INestApplication) => {
   const config = getServerConfig();
@@ -13,6 +14,8 @@ export const setupApp = (app: INestApplication) => {
 
   // 设置路由前缀
   app.setGlobalPrefix('/v1/api');
+
+  app.useGlobalFilters(new TypeormFilter());
 
   // 全局拦截器
   app.useGlobalPipes(
