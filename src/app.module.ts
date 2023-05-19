@@ -7,8 +7,8 @@ import { connectionParams } from 'ormconfig';
 import { UserModule } from './user/user.module';
 import { RolesModule } from './roles/roles.module';
 import { MenusModule } from './menus/menus.module';
-import { AuthModule } from './auth/auth.module';
 import { LogsModule } from './logs/logs.module';
+import { AuthModule } from './auth/auth.module';
 
 const schema = Joi.object({
   NODE_ENV: Joi.string()

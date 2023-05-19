@@ -21,9 +21,9 @@ export class User {
   @Exclude() // 跳过校验
   password: string;
 
-  @OneToMany(() => Logs, (logs) => logs.user)
+  @OneToMany(() => Logs, (logs) => logs.user, { cascade: true })
   logs: Logs[];
 
-  @ManyToMany(() => Role, (role) => role.users)
+  @ManyToMany(() => Role, (role) => role.users, { cascade: ['insert'] })
   roles: Role[];
 }

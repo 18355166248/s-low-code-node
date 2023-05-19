@@ -3,25 +3,43 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { GetUserDto } from './dto/get-user.dto';
 import { conditionUtils } from 'src/utils/db.helper';
+import { Role } from 'src/roles/entities/role.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
+    if (!createUserDto.roles) {
+      const role = await this.roleRepository.findOne({ where: { id: 2 } });
+      createUserDto.roles = [role];
+    }
+    if (
+      Array.isArray(createUserDto.roles) &&
+      typeof createUserDto.roles[0] === 'number'
+    ) {
+      // 查询出所有的角色
+      createUserDto.roles = await this.roleRepository.find({
+        where: {
+          id: In(createUserDto.roles),
+        },
+      });
+    }
+
+    const user = await this.userRepository.create(createUserDto);
     return 'This action adds a new user';
   }
 
   async findAll(query: GetUserDto) {
     const { pageNo, pageSize, userName } = query;
     const take = pageSize || 10;
-    const skip = ((pageNo || 1) - 1) * pageSize;
-
+    const skip = ((pageNo || 1) - 1) * take;
     const obj = {
       'user.userName': userName,
     };
