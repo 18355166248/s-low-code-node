@@ -33,7 +33,7 @@ export class UserService {
     }
 
     const user = await this.userRepository.create(createUserDto);
-    return 'This action adds a new user';
+    return user;
   }
 
   async findAll(query: GetUserDto) {

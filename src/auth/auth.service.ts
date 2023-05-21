@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { SignInterface } from './auth.controller';
 import { UserService } from 'src/user/user.service';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
+import { SignUpDto } from './dto/signUp.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private userService: UserService) {}
 
-  async signIn(data: SignInterface) {
+  async signIn(data: SignUpDto) {
     const user = await this.userService.findAll({
       userName: data.userName,
     } as GetUserDto);
@@ -16,8 +16,9 @@ export class AuthService {
     return user;
   }
 
-  async signUp(data: SignInterface) {
+  async signUp(data: SignUpDto) {
     const user = await this.userService.create(data);
     return 'signUp';
   }
+  
 }

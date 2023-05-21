@@ -1,10 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-
-export interface SignInterface {
-  userName: string;
-  password: string;
-}
+import { SignUpDto } from './dto/signUp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,13 +8,13 @@ export class AuthController {
 
   // 登录
   @Post('signIn')
-  signIn(@Body() body: SignInterface) {
+  signIn(@Body() body: SignUpDto) {
     return this.authService.signIn(body);
   }
 
   // 注册
   @Post('signUp')
-  signUp(@Body() body: SignInterface) {
+  signUp(@Body() body: SignUpDto) {
     return this.authService.signUp(body);
   }
 }
