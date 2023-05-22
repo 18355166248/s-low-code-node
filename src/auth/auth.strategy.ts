@@ -8,6 +8,7 @@ import { ConfigEnum } from 'src/enum/config.enum';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(protected configService: ConfigService) {
     super({
+      // 解析请求过来的 token
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>(ConfigEnum.SECRET),

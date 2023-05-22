@@ -36,6 +36,13 @@ export class UserService {
     return user;
   }
 
+  async find(userName: string) {
+    return this.userRepository.findOne({
+      where: { userName },
+      relations: ['roles', 'roles.menus'],
+    });
+  }
+
   async findAll(query: GetUserDto) {
     const { pageNo, pageSize, userName } = query;
     const take = pageSize || 10;

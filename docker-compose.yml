@@ -19,3 +19,13 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  redis-master:     # 自定义服务名
+    image: redis:7.0    # 我们所需要运行的镜像，没有的话，会自定为我们下载
+    container_name: redis-slow  # 镜像运行后的容器名，自定义
+    ports:
+      - 6379:6379           # 宿主机的6379映射容器内部的6379端口
+    volumes:  # 目录挂载 。分号 ： 右边代表容器内部的目录，分号左边表示宿主机的目录，
+      - /Users/xmly/Study/code/Node/s-low-code-node/redis-slow/redis.conf:/redis.conf
+      - /Users/xmly/Study/code/Node/s-low-code-node/redis-slow/data:/data
+    command: bash -c "redis-server /redis.conf"  # 容器启动后，运行的命令

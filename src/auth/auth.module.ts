@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigEnum } from 'src/enum/config.enum';
 import { JwtStrategy } from './auth.strategy';
 
+@Global()
 @Module({
   imports: [
     UserModule,
@@ -18,7 +19,7 @@ import { JwtStrategy } from './auth.strategy';
         return {
           secret: configService.get<string>(ConfigEnum.SECRET),
           signOptions: {
-            expiresIn: '1d',
+            expiresIn: '1d', // 表示一天 文档 https://github.com/auth0/node-jsonwebtoken#jwtsignpayload-secretorprivatekey-options-callback
           },
         };
       },

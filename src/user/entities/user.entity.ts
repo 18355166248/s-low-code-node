@@ -4,6 +4,7 @@ import { Role } from 'src/roles/entities/role.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -25,5 +26,6 @@ export class User {
   logs: Logs[];
 
   @ManyToMany(() => Role, (role) => role.users, { cascade: ['insert'] })
+  @JoinTable({ name: 'users_roles' })
   roles: Role[];
 }

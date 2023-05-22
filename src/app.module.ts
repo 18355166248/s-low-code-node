@@ -1,5 +1,5 @@
-import { Global, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Global, Logger, LoggerService, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import * as dotenv from 'dotenv';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +9,8 @@ import { RolesModule } from './roles/roles.module';
 import { MenusModule } from './menus/menus.module';
 import { LogsModule } from './logs/logs.module';
 import { AuthModule } from './auth/auth.module';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { ConfigEnum } from './enum/config.enum';
 
 const schema = Joi.object({
   NODE_ENV: Joi.string()
@@ -25,12 +27,15 @@ const schema = Joi.object({
   LOG_LEVEL: Joi.string(),
 });
 
+const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
+
 @Global()
 @Module({
   imports: [
     // 环境变了配置和校验
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath,
       load: [
         () => {
           const values = dotenv.config({ path: '.env' });
@@ -50,6 +55,27 @@ const schema = Joi.object({
       ],
       validationSchema: schema,
     }),
+    // redis
+    RedisModule.forRootAsync({
+      useFactory: (configService: ConfigService, logger: LoggerService) => {
+        const host = configService.get(ConfigEnum.REDIS_HOST);
+        const port = configService.get(ConfigEnum.REDIS_PORT);
+        const password = configService.get(ConfigEnum.REDIS_PASSWORD);
+        const url = password
+          ? `redis://${password}@${host}:${port}`
+          : `redis://${host}:${port}`;
+        return {
+          config: {
+            url,
+            reconnectOnError: (err) => {
+              logger.error(`Redis Connection error: ${err}`);
+              return true;
+            },
+          },
+        };
+      },
+      inject: [ConfigService, Logger],
+    }),
     TypeOrmModule.forRoot(connectionParams),
     LogsModule,
     UserModule,
@@ -58,6 +84,7 @@ const schema = Joi.object({
     AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [Logger],
+  exports: [Logger],
 })
 export class AppModule {}
