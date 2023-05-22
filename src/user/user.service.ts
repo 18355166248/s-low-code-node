@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { In, Repository } from 'typeorm';
 import { GetUserDto } from './dto/get-user.dto';
 import { conditionUtils } from 'src/utils/db.helper';
 import { Role } from 'src/roles/entities/role.entity';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     if (!createUserDto.roles) {
-      const role = await this.roleRepository.findOne({ where: { id: 2 } });
+      const role = await this.roleRepository.findOne({ where: { id: 3 } });
+      if (!role) {
+        throw new ForbiddenException('没有可用的角色');
+      }
       createUserDto.roles = [role];
     }
     if (
@@ -33,7 +37,12 @@ export class UserService {
     }
 
     const user = await this.userRepository.create(createUserDto);
-    return user;
+    // 创建用户针对密码做加密
+    user.password = await argon2.hash(user.password);
+
+    const res = await this.userRepository.save(user);
+
+    return res;
   }
 
   async find(userName: string) {

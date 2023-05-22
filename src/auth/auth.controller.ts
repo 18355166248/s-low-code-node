@@ -1,4 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signUp.dto';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
@@ -22,6 +28,8 @@ export class AuthController {
   }
 
   // 注册
+  // 排除属性
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('signUp')
   signUp(@Body() body: SignUpDto) {
     return this.authService.signUp(body);

@@ -18,7 +18,7 @@ import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, AuthGuard('jwt'))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -28,7 +28,6 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   findAll(@Query() query: GetUserDto, @Req() req) {
     return this.userService.findAll(query);
   }

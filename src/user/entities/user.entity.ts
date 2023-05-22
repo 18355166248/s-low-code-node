@@ -13,13 +13,14 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
+  @Exclude()
   id: number;
 
   @Column({ unique: true })
   userName: string;
 
   @Column()
-  @Exclude() // 跳过校验
+  @Exclude() // 排除
   password: string;
 
   @OneToMany(() => Logs, (logs) => logs.user, { cascade: true })
