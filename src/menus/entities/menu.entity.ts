@@ -1,4 +1,4 @@
-import { Role } from 'src/roles/entities/role.entity';
+import { Role } from '../../roles/entities/role.entity';
 import {
   Column,
   Entity,
@@ -20,6 +20,9 @@ export class Menu {
 
   @Column()
   order: number;
+
+  @Column()
+  acl: string; // 权限控制 CREATE, READ, UPDATE, DELETE, MANAGE
 
   // 一个用户对应多个menu
   @ManyToMany(() => Role, (role) => role.menus)

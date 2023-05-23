@@ -5,6 +5,6 @@ interface ClassConstructor {
   new (...args: any[]): any;
 }
 
-export function AuthSerialize(dto: ClassConstructor) {
+export function Serialize(dto: ClassConstructor) {
   return UseInterceptors(new SerializeInterceptor(dto));
 }

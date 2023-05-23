@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
-import { Menu } from 'src/menus/entities/menu.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Menu } from '../../menus/entities/menu.entity';
+import { User } from '../../user/entities/user.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

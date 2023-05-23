@@ -16,4 +16,8 @@ export class CreateMenuDto {
   @IsNumber()
   @IsOptional()
   order: number;
+
+  @IsString()
+  @IsNotEmpty()
+  acl: string;
 }

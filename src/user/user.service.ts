@@ -5,8 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { GetUserDto } from './dto/get-user.dto';
-import { conditionUtils } from 'src/utils/db.helper';
-import { Role } from 'src/roles/entities/role.entity';
+import { conditionUtils } from '../utils/db.helper';
+import { Role } from '../roles/entities/role.entity';
 import * as argon2 from 'argon2';
 
 @Injectable()

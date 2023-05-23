@@ -7,7 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
 import { verify } from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
-import { ConfigEnum } from 'src/enum/config.enum';
+import { ConfigEnum } from '../enum/config.enum';
 import Redis from 'ioredis';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 
@@ -40,7 +40,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const parentCanActivate = (await super.canActivate(context)) as boolean;
-
     return parentCanActivate;
   }
 }

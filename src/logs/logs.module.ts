@@ -3,7 +3,7 @@ import { WinstonModule, WinstonModuleOptions } from 'nest-winston';
 import { ConfigService } from '@nestjs/config';
 import * as winston from 'winston';
 import { utilities } from 'nest-winston';
-import { LogEnum } from 'src/enum/config.enum';
+import { LogEnum } from '../enum/config.enum';
 import 'winston-daily-rotate-file';
 
 function createDailyRotateTransport(level: string, filename: string) {
