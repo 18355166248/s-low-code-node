@@ -13,7 +13,7 @@ import { MenusService } from './menus.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { PoliciesGuard } from '../guards/policies-guard.guard';
-import { Can, CheckPolicies } from '../decorators/casl.decorators';
+import { Can } from '../decorators/casl.decorators';
 import { Action } from '../enum/action.enum';
 import { Menu } from './entities/menu.entity';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
@@ -21,7 +21,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller('menus')
 @UseGuards(JwtAuthGuard, AuthGuard('jwt'), PoliciesGuard)
-@CheckPolicies((ability) => ability.can(Action.Create, Menu))
+// @CheckPolicies((ability) => ability.can(Action.Create, Menu))
 export class MenusController {
   constructor(private readonly menusService: MenusService) {}
 
@@ -38,16 +38,19 @@ export class MenusController {
   }
 
   @Get(':id')
+  @Can(Action.Read, Menu)
   findOne(@Param('id') id: string) {
     return this.menusService.findOne(+id);
   }
 
   @Patch(':id')
+  @Can(Action.Update, Menu)
   update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
     return this.menusService.update(+id, updateMenuDto);
   }
 
   @Delete(':id')
+  @Can(Action.Delete, Menu)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.menusService.remove(id);
   }

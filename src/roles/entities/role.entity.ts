@@ -9,7 +9,7 @@ export class Role {
   @Expose()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   @Expose()
   name: string;
 
