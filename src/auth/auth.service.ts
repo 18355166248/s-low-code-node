@@ -25,11 +25,15 @@ export class AuthService {
       throw new ForbiddenException('用户名或密码错误');
     }
 
+    delete user.password;
     // 这里的数据格式化会在 JwtStrategy 的 validate拿到
-    return this.jwt.signAsync({
-      username: data.userName,
-      sub: user.id,
-    });
+    return {
+      tokenPromise: this.jwt.signAsync({
+        username: data.userName,
+        sub: user.id,
+      }),
+      user,
+    };
   }
 
   // 注册

@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class SignUpDto {

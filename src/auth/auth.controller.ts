@@ -19,11 +19,13 @@ export class AuthController {
   // 登录
   @Post('signIn')
   async signIn(@Body() body: SignUpDto) {
-    const token = await this.authService.signIn(body);
+    const { tokenPromise, user } = await this.authService.signIn(body);
+    const token = await tokenPromise;
     // 缓存token
     await this.redis.set(body.userName, token);
     return {
       access_token: token,
+      user,
     };
   }
 
@@ -33,5 +35,13 @@ export class AuthController {
   @Post('signUp')
   signUp(@Body() body: SignUpDto) {
     return this.authService.signUp(body);
+  }
+
+  // 登出
+  @Post('signOut')
+  async signOut(@Body() body: Pick<SignUpDto, 'userName'>) {
+    await this.redis.del(body.userName);
+
+    return 'success';
   }
 }

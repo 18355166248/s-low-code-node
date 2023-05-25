@@ -5,6 +5,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { TypeormFilter } from './filters/typeorm.filter';
+import { HttpResponseInterceptor } from './interceptors/response.interceptor';
 
 export const setupApp = (app: INestApplication) => {
   const config = getServerConfig();
@@ -13,8 +14,9 @@ export const setupApp = (app: INestApplication) => {
   flag && app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   // 设置路由前缀
-  app.setGlobalPrefix('/v1/api');
+  app.setGlobalPrefix('/api/v1');
 
+  app.useGlobalInterceptors(new HttpResponseInterceptor());
   app.useGlobalFilters(new TypeormFilter());
 
   // 全局拦截器
