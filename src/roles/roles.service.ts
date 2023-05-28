@@ -4,6 +4,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class RolesService {
@@ -17,7 +18,9 @@ export class RolesService {
   }
 
   findAll() {
-    return this.roleRepository.find();
+    return this.roleRepository.find({
+      relations: ['user'],
+    });
   }
 
   findOne(id: number) {

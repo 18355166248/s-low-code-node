@@ -19,7 +19,7 @@ import { Action } from '../enum/action.enum';
 import { Role } from './entities/role.entity';
 
 @Controller('roles')
-@UseGuards(JwtAuthGuard, AuthGuard('jwt'), PoliciesGuard)
+@UseGuards(JwtAuthGuard, AuthGuard('jwt'))
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
@@ -30,7 +30,6 @@ export class RolesController {
   }
 
   @Get()
-  @Can(Action.Read, Role)
   findAll() {
     return this.rolesService.findAll();
   }
