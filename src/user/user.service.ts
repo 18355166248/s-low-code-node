@@ -59,11 +59,15 @@ export class UserService {
     const obj = {
       'user.userName': userName,
     };
-
+    console.log('query', query);
     let qb = this.userRepository
       .createQueryBuilder('user')
+      .select(['user.id', 'user.userName', 'roles.name', 'roles.id']) // 指定返回的字段
+      .leftJoin('user.roles', 'roles')
+      .orderBy('user.id', 'DESC')
       .skip(skip)
       .take(take);
+
     // 动态添加搜索 如果没有值则不搜索
     qb = conditionUtils(qb, obj);
     const res = await qb.getManyAndCount();

@@ -34,7 +34,8 @@ export class UserController {
 
   @Get()
   @Can(Action.Read, User)
-  findAll(@Query() query: GetUserDto, @Req() req) {
+  findAll(@Query() query: GetUserDto) {
+    console.log('query', query);
     return this.userService.findAll(query);
   }
 

@@ -19,8 +19,9 @@ export class RolesService {
   findAll() {
     return this.roleRepository
       .createQueryBuilder('roles')
-      .select(['roles.name', 'users.userName']) // 指定返回的字段
+      .select(['roles.id', 'roles.name', 'users.userName']) // 指定返回的字段
       .leftJoin('roles.users', 'users')
+      .orderBy('roles.id', 'ASC')
       .getMany();
   }
 

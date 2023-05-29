@@ -27,7 +27,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
     if (!token) {
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('', HttpStatus.UNAUTHORIZED);
     }
 
     let payload;
@@ -35,13 +35,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     try {
       payload = await verify(token, this.configService.get(ConfigEnum.SECRET));
     } catch (error) {
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('', HttpStatus.UNAUTHORIZED);
     }
 
     const username = payload['username'];
     const tokenCache = username ? await this.redis.get(username) : null;
     if (!payload || !username || token !== tokenCache) {
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('', HttpStatus.UNAUTHORIZED);
     }
 
     const parentCanActivate = (await super.canActivate(context)) as boolean;
