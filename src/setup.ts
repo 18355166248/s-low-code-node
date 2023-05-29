@@ -1,10 +1,10 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { getServerConfig } from 'ormconfig';
 import { LogEnum } from './enum/config.enum';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { TypeormFilter } from './filters/typeorm.filter';
+import { HttpExceptionFilter } from './filters/typeorm.filter';
 import { HttpResponseInterceptor } from './interceptors/response.interceptor';
 
 export const setupApp = (app: INestApplication) => {
@@ -17,7 +17,7 @@ export const setupApp = (app: INestApplication) => {
   app.setGlobalPrefix('/api/v1');
 
   app.useGlobalInterceptors(new HttpResponseInterceptor());
-  app.useGlobalFilters(new TypeormFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(new Logger()));
 
   // 全局拦截器
   app.useGlobalPipes(

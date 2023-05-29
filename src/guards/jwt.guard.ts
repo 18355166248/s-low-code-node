@@ -1,7 +1,8 @@
 import {
   ExecutionContext,
   Injectable,
-  UnauthorizedException,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
@@ -26,17 +27,21 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const payload = await verify(
-      token,
-      this.configService.get(ConfigEnum.SECRET),
-    );
+    let payload;
+
+    try {
+      payload = await verify(token, this.configService.get(ConfigEnum.SECRET));
+    } catch (error) {
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     const username = payload['username'];
     const tokenCache = username ? await this.redis.get(username) : null;
     if (!payload || !username || token !== tokenCache) {
-      throw new UnauthorizedException();
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const parentCanActivate = (await super.canActivate(context)) as boolean;

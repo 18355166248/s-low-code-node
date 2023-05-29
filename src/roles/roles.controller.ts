@@ -13,7 +13,6 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { JwtAuthGuard } from '../guards/jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
-import { PoliciesGuard } from '../guards/policies-guard.guard';
 import { Can } from '../decorators/casl.decorators';
 import { Action } from '../enum/action.enum';
 import { Role } from './entities/role.entity';
