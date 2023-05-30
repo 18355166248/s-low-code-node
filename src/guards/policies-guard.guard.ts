@@ -1,5 +1,11 @@
 import { AnyMongoAbility } from '@casl/ability';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  HttpException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { CaslAbilityService } from '../auth/casl-ability.service';
 import {
@@ -67,9 +73,12 @@ export class PoliciesGuard implements CanActivate {
           flag = this.execPolicyHandler(canNotHandlers, ability);
         }
       }
+      if (!flag) {
+        throw new ForbiddenException('暂无权限');
+      }
       return flag;
     } else {
-      return false;
+      throw new ForbiddenException('暂无权限');
     }
   }
 

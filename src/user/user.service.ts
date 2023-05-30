@@ -5,15 +5,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { GetUserDto } from './dto/get-user.dto';
-import { conditionUtils } from '../utils/db.helper';
+import { fuzzySearchUtils } from '../utils/db.helper';
 import { Role } from '../roles/entities/role.entity';
 import * as argon2 from 'argon2';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    private readonly roleService: RolesService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -24,10 +26,7 @@ export class UserService {
       }
       createUserDto.roles = [role];
     }
-    if (
-      Array.isArray(createUserDto.roles) &&
-      typeof createUserDto.roles[0] === 'number'
-    ) {
+    if (Array.isArray(createUserDto.roles)) {
       // 查询出所有的角色
       createUserDto.roles = await this.roleRepository.find({
         where: {
@@ -59,7 +58,6 @@ export class UserService {
     const obj = {
       'user.userName': userName,
     };
-    console.log('query', query);
     let qb = this.userRepository
       .createQueryBuilder('user')
       .select(['user.id', 'user.userName', 'roles.name', 'roles.id']) // 指定返回的字段
@@ -69,20 +67,43 @@ export class UserService {
       .take(take);
 
     // 动态添加搜索 如果没有值则不搜索
-    qb = conditionUtils(qb, obj);
+    qb = fuzzySearchUtils(qb, obj);
     const res = await qb.getManyAndCount();
     return {
       data: res[0],
       total: res[1],
+      pageNo,
+      pageSize,
     };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        roles: true,
+      },
+    });
+  }
+  async getRoles(roleIds: number[]): Promise<Role[]> {
+    const arr = [];
+    roleIds.map(async (id) => {
+      arr.push(this.roleService.findOne(id));
+    });
+    return Promise.all(arr);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const userTemp = await this.findOne(id);
+    const roleIds: any = updateUserDto.roles;
+    const roles: any = await this.getRoles(roleIds);
+    updateUserDto.roles = roles;
+    delete userTemp.roles;
+    const newUser = this.userRepository.merge(userTemp, updateUserDto);
+    // 联合模型更新，需要使用save方法或者queryBuilder
+    return this.userRepository.save(newUser);
   }
 
   remove(id: number) {
