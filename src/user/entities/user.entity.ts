@@ -4,11 +4,13 @@ import { Role } from '../../roles/entities/role.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Project } from '../../project/entities/project.entity';
 
 @Entity()
 export class User {
@@ -29,4 +31,8 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users, { cascade: ['insert'] })
   @JoinTable({ name: 'users_roles' })
   roles: Role[];
+
+  @OneToMany(() => Project, (project) => project.user)
+  @JoinColumn({ name: 'user_projects' })
+  projects: Project[];
 }
