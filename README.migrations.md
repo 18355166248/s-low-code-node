@@ -9,7 +9,7 @@
 1. npm run migration:generate ./src/migrations/name (name 就是你要更新这次操作的语义化名字 随意写即可)
 2. 执行完上面的操作后会再 src/migration 文件夹下生成一个文件 包含更新和回退的命令 再执行 npm run migration:run 即可更新到数据
 
-假如说更新有问题需要回退 请执行 npm run igration:revert
+假如说更新有问题需要回退 请执行 npm run migration:revert
 
 ### 问题:
 

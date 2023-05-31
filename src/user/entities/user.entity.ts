@@ -4,7 +4,6 @@ import { Role } from '../../roles/entities/role.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -33,6 +32,5 @@ export class User {
   roles: Role[];
 
   @OneToMany(() => Project, (project) => project.user)
-  @JoinColumn({ name: 'user_projects' })
   projects: Project[];
 }
