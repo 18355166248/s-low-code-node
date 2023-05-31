@@ -67,7 +67,9 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           : `redis://${host}:${port}`;
         return {
           config: {
-            url,
+            password,
+            port,
+            host,
             reconnectOnError: (err) => {
               logger.error(`Redis Connection error: ${err}`);
               return true;
