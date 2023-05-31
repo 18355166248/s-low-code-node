@@ -1,6 +1,12 @@
 import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../user/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Project {
@@ -12,14 +18,15 @@ export class Project {
   @Expose()
   name: string;
 
-  @Column()
+  @Column({ default: '' })
   @Expose()
-  description?: string;
+  description: string;
 
-  @Column()
+  @Column({ type: 'longtext' })
   @Expose()
   code: string; // 代码块
 
   @ManyToOne(() => User, (user) => user.projects)
+  @JoinColumn()
   user: User;
 }
