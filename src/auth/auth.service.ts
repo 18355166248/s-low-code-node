@@ -2,7 +2,8 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { SignUpDto } from './dto/signUp.dto';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
+// import * as argon2 from 'argon2';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -16,9 +17,13 @@ export class AuthService {
       throw new ForbiddenException('用户不存在, 请先注册');
     }
     // 针对密码做比对
-    const isPasswordValidate = await argon2.verify(
-      user.password,
+    // const isPasswordValidate = await argon2.verify(
+    //   user.password,
+    //   data.password,
+    // );
+    const isPasswordValidate = await bcrypt.compare(
       data.password,
+      user.password,
     );
 
     if (!isPasswordValidate) {

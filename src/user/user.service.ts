@@ -7,8 +7,9 @@ import { In, Repository } from 'typeorm';
 import { GetUserDto } from './dto/get-user.dto';
 import { fuzzySearchUtils } from '../utils/db.helper';
 import { Role } from '../roles/entities/role.entity';
-import * as argon2 from 'argon2';
+// import * as argon2 from 'argon2';
 import { RolesService } from 'src/roles/roles.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -37,7 +38,10 @@ export class UserService {
 
     const user = await this.userRepository.create(createUserDto);
     // 创建用户针对密码做加密
-    user.password = await argon2.hash(user.password);
+    // user.password = await argon2.hash(user.password);
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    user.password = await bcrypt.hash(user.password, salt);
 
     const res = await this.userRepository.save(user);
 
