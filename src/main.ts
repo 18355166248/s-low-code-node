@@ -6,7 +6,9 @@ import { setupApp } from './setup';
 async function bootstrap() {
   const config = getServerConfig();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   setupApp(app);
 
   const port =
