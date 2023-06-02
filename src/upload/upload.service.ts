@@ -3,7 +3,9 @@ import { UpdateUploadDto } from './dto/update-upload.dto';
 import { mkdir } from 'node:fs/promises';
 import { createWriteStream } from 'node:fs';
 import { join } from 'path';
-import { getYearAndMonth } from 'src/utils/Date';
+import { getYearAndMonthAndDay } from 'src/utils/Date';
+import { getFileListFromFile } from 'src/utils/fs';
+import { PaginationReq } from 'src/common/commonClass';
 
 @Injectable()
 export class UploadService {
@@ -13,7 +15,7 @@ export class UploadService {
     }
     const fileName = join(
       __dirname,
-      `../../../uploadFile/${getYearAndMonth()}`,
+      `../../../uploadFile/${getYearAndMonthAndDay()}`,
     );
     try {
       await mkdir(fileName, { recursive: true });
@@ -34,7 +36,7 @@ export class UploadService {
   async uploadFiles(files: Array<Express.Multer.File>) {
     const fileName = join(
       __dirname,
-      `../../../uploadFile/${getYearAndMonth()}`,
+      `../../../uploadFile/${getYearAndMonthAndDay()}`,
     );
     try {
       await mkdir(fileName, { recursive: true });
@@ -54,8 +56,13 @@ export class UploadService {
     return 'success';
   }
 
-  findAll() {
-    return `This action returns all upload`;
+  async findAll(query: PaginationReq) {
+    const res = await getFileListFromFile(
+      join(__dirname, '../../../uploadFile'),
+      undefined,
+      { ...query, isFirst: true },
+    );
+    return res;
   }
 
   findOne(id: number) {

@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import * as dotenv from 'dotenv';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { connectionParams } from 'ormconfig';
 import { UserModule } from './user/user.module';
 import { RolesModule } from './roles/roles.module';
 import { MenusModule } from './menus/menus.module';
@@ -13,7 +12,9 @@ import { RedisModule } from '@nestjs-modules/ioredis';
 import { ConfigEnum } from './enum/config.enum';
 import { ProjectModule } from './project/project.module';
 import { UploadModule } from './upload/upload.module';
+import { connectionParams } from 'ormconfig';
 
+console.log('connectionParams', connectionParams);
 const schema = Joi.object({
   NODE_ENV: Joi.string()
     .valid('development', 'production')
