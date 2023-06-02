@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { ConfigEnum } from './enum/config.enum';
 import { ProjectModule } from './project/project.module';
+import { UploadModule } from './upload/upload.module';
 
 const schema = Joi.object({
   NODE_ENV: Joi.string()
@@ -86,6 +87,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
     MenusModule,
     AuthModule,
     ProjectModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [Logger],
