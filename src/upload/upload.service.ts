@@ -57,11 +57,11 @@ export class UploadService {
   }
 
   async findAll(query: PaginationReq) {
-    const res = await getFileListFromFile(
-      join(__dirname, '../../../uploadFile'),
-      undefined,
-      { ...query, isFirst: true },
-    );
+    const fileName = join(__dirname, '../../../uploadFile');
+    const res = await getFileListFromFile(fileName, undefined, {
+      ...query,
+      isFirst: true,
+    });
     return res;
   }
 
