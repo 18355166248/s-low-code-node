@@ -6,6 +6,9 @@ import { join } from 'path';
 import { getYearAndMonthAndDay } from 'src/utils/Date';
 import { getFileListFromFile } from 'src/utils/fs';
 import { PaginationReq } from 'src/common/commonClass';
+import { getServerConfig } from 'ormconfig';
+
+const config = getServerConfig();
 
 @Injectable()
 export class UploadService {
@@ -13,10 +16,8 @@ export class UploadService {
     if (!file.originalname) {
       throw new HttpException('文件有误', HttpStatus.NOT_ACCEPTABLE);
     }
-    const fileName = join(
-      __dirname,
-      `../../../uploadFile/${getYearAndMonthAndDay()}`,
-    );
+    const path = getYearAndMonthAndDay();
+    const fileName = join(__dirname, `../../../uploadFile/${path}`);
     try {
       await mkdir(fileName, { recursive: true });
     } catch (error) {
@@ -25,19 +26,18 @@ export class UploadService {
       }
     }
 
-    const writeStream = createWriteStream(
-      join(fileName, `${Date.now()}-${file.originalname}`),
-    );
+    const file_name = `${Date.now()}-${file.originalname}`;
+    const file_path_name = join(fileName, file_name);
+
+    const writeStream = createWriteStream(file_path_name);
     writeStream.write(file.buffer);
 
-    return 'success';
+    return `${config['PREVIEW_IMAGES'] || ''}/${path}/${file_name}`;
   }
 
   async uploadFiles(files: Array<Express.Multer.File>) {
-    const fileName = join(
-      __dirname,
-      `../../../uploadFile/${getYearAndMonthAndDay()}`,
-    );
+    const path = getYearAndMonthAndDay();
+    const fileName = join(__dirname, `../../../uploadFile/${path}`);
     try {
       await mkdir(fileName, { recursive: true });
     } catch (error) {
@@ -46,14 +46,16 @@ export class UploadService {
       }
     }
 
+    const res = [];
     for (const file of files) {
-      const writeStream = createWriteStream(
-        join(fileName, `${Date.now()}-${file.originalname}`),
-      );
+      const file_name = `${Date.now()}-${file.originalname}`;
+      const file_path_name = join(fileName, file_name);
+      const writeStream = createWriteStream(file_path_name);
       writeStream.write(file.buffer);
+      res.push(`${config['PREVIEW_IMAGES'] || ''}/${path}/${file_name}`);
     }
 
-    return 'success';
+    return res;
   }
 
   async findAll(query: PaginationReq) {

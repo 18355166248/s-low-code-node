@@ -9,8 +9,6 @@ export interface FileProps {
 
 const config = getServerConfig();
 
-console.log('config', config);
-
 // 遍历一个文件夹下的所有文件和文件夹名字
 export async function getFileListFromFile(
   path,
