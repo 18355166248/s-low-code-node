@@ -3,10 +3,12 @@ import { UpdateUploadDto } from './dto/update-upload.dto';
 import { mkdir } from 'node:fs/promises';
 import { createWriteStream } from 'node:fs';
 import { join } from 'path';
-import { getYearAndMonthAndDay } from 'src/utils/Date';
+import { getNowFormatDate } from 'src/utils/Date';
 import { getFileListFromFile } from 'src/utils/fs';
 import { PaginationReq } from 'src/common/commonClass';
 import { getServerConfig } from 'ormconfig';
+import { getIsSuportWebP, transformWebp } from 'src/utils/webp';
+import { Request } from 'express';
 
 const config = getServerConfig();
 
@@ -16,7 +18,9 @@ export class UploadService {
     if (!file.originalname) {
       throw new HttpException('文件有误', HttpStatus.NOT_ACCEPTABLE);
     }
-    const path = getYearAndMonthAndDay();
+    const { mimetype } = file;
+    const notWebp = mimetype !== 'image/webp'; // 不是webp 再保存一份 webp
+    const path = getNowFormatDate();
     const fileName = join(__dirname, `../../../uploadFile/${path}`);
     try {
       await mkdir(fileName, { recursive: true });
@@ -29,6 +33,18 @@ export class UploadService {
     const file_name = `${Date.now()}-${file.originalname}`;
     const file_path_name = join(fileName, file_name);
 
+    // 另外保存一份 webp
+    if (notWebp) {
+      const fileNameList = file_name.split('.');
+      fileNameList[fileNameList.length - 1] = '.webp';
+      const webpFileName = fileNameList.join('');
+      const webp_file_path_name = join(fileName, webpFileName);
+      transformWebp({
+        filePath: file_path_name,
+        outputFile: webp_file_path_name,
+      });
+    }
+
     const writeStream = createWriteStream(file_path_name);
     writeStream.write(file.buffer);
 
@@ -36,7 +52,7 @@ export class UploadService {
   }
 
   async uploadFiles(files: Array<Express.Multer.File>) {
-    const path = getYearAndMonthAndDay();
+    const path = getNowFormatDate();
     const fileName = join(__dirname, `../../../uploadFile/${path}`);
     try {
       await mkdir(fileName, { recursive: true });
@@ -48,8 +64,23 @@ export class UploadService {
 
     const res = [];
     for (const file of files) {
+      const { mimetype } = file;
+      const notWebp = mimetype !== 'image/webp'; // 不是webp 再保存一份 webp
       const file_name = `${Date.now()}-${file.originalname}`;
       const file_path_name = join(fileName, file_name);
+
+      // 另外保存一份 webp
+      if (notWebp) {
+        const fileNameList = file_name.split('.');
+        fileNameList[fileNameList.length - 1] = '.webp';
+        const webpFileName = fileNameList.join('');
+        const webp_file_path_name = join(fileName, webpFileName);
+        transformWebp({
+          filePath: file_path_name,
+          outputFile: webp_file_path_name,
+        });
+      }
+
       const writeStream = createWriteStream(file_path_name);
       writeStream.write(file.buffer);
       res.push(`${config['PREVIEW_IMAGES'] || ''}/${path}/${file_name}`);
