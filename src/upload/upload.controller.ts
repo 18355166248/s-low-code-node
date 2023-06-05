@@ -9,6 +9,7 @@ import {
   UploadedFiles,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
@@ -46,6 +47,12 @@ export class UploadController {
   @Get('list')
   findAll(@Query() query: PaginationReq) {
     return this.uploadService.findAll(query);
+  }
+
+  @Get('/getOne/:filePath/:fileName')
+  findOne(@Param() params: any) {
+    const { filePath, fileName } = params;
+    return this.uploadService.findOne(filePath + '/' + fileName);
   }
 
   @Delete(':id')

@@ -1,14 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateUploadDto } from './dto/update-upload.dto';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { createWriteStream } from 'node:fs';
 import { join } from 'path';
 import { getNowFormatDate } from 'src/utils/Date';
 import { getFileListFromFile } from 'src/utils/fs';
 import { PaginationReq } from 'src/common/commonClass';
 import { getServerConfig } from 'ormconfig';
-import { getIsSuportWebP, transformWebp } from 'src/utils/webp';
-import { Request } from 'express';
+import { transformWebp } from 'src/utils/webp';
 
 const config = getServerConfig();
 
@@ -98,8 +97,11 @@ export class UploadService {
     return res;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} upload`;
+  async findOne(fileName: string) {
+    const path = join(__dirname, '../../../uploadFile', fileName);
+    const res = await readFile(path);
+
+    return res;
   }
 
   update(id: number, updateUploadDto: UpdateUploadDto) {
