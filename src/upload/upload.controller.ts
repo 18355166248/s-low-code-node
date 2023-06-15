@@ -9,7 +9,6 @@ import {
   UploadedFiles,
   Query,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';

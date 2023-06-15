@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunks_low_components=self.webpackChunks_low_components||[]).push([[907],{4907:function(o,t,e){e.r(t);t.default={name:"Remote\u6807\u9898",type:"LowTitle",props:{title:"Remote\u6807\u9898",subTitle:"\u541f\u6e38\u8bd7\u4eba",align:"start",backgroundColor:"rgba(255, 255, 255, 1)",titleColor:"rgba(74, 144, 226, 1)",subTitleColor:"rgba(74, 144, 226, 1)"},iconfont:"slow-biaotizujian"}}}]);
+//# sourceMappingURL=907.c6196c15.chunk.js.map

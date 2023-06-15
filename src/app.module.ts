@@ -13,6 +13,8 @@ import { ConfigEnum } from './enum/config.enum';
 import { ProjectModule } from './project/project.module';
 import { UploadModule } from './upload/upload.module';
 import { connectionParams } from 'ormconfig';
+import { RemoteCompModule } from './remote-comp/remote-comp.module';
+import { RemoteCompVersionModule } from './remote-comp-version/remote-comp-version.module';
 
 console.log('connectionParams', connectionParams);
 const schema = Joi.object({
@@ -89,6 +91,8 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
     AuthModule,
     ProjectModule,
     UploadModule,
+    RemoteCompModule,
+    RemoteCompVersionModule,
   ],
   controllers: [],
   providers: [Logger],

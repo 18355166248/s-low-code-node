@@ -25,7 +25,7 @@ export class UploadService {
       await mkdir(fileName, { recursive: true });
     } catch (error) {
       if (error) {
-        throw new HttpException('文件夹有误', HttpStatus.NOT_ACCEPTABLE);
+        throw new HttpException('文件夹创建失败', HttpStatus.NOT_ACCEPTABLE);
       }
     }
 
