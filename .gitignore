@@ -404,3 +404,5 @@ redis-slow
 dist.zip
 
 uploadFile
+
+uploadRemoteComp

@@ -3,7 +3,6 @@ import { readFile } from 'fs';
 
 export function extractZip(filepath: string, outputPath = './') {
   return new Promise((resolve, reject) => {
-    console.log(222, filepath, outputPath);
     readFile(filepath, function (err, data) {
       if (err) {
         reject(err);
