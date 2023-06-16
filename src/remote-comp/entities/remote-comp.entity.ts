@@ -27,6 +27,5 @@ export class RemoteComp {
   currentVersion: string; // 当前正在应用的版本号
 
   @OneToMany(() => RemoteCompVersion, (version) => version.comp)
-  @JoinColumn()
   versions: RemoteCompVersion[]; // 远程组件版本
 }
