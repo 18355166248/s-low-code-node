@@ -16,6 +16,10 @@ import { RemoteCompVersion } from '../remote-comp-version/entities/remote-comp-v
 import { getServerConfig } from 'ormconfig';
 import { fuzzySearchUtils } from 'src/utils/db.helper';
 
+const compressingConfig = {
+  pathKey: 'offline',
+};
+
 @Injectable()
 export class RemoteCompService {
   config: Record<string, unknown>;
@@ -84,10 +88,7 @@ export class RemoteCompService {
             // 创建数据
             await this.create({
               ...createRemoteCompDto,
-              path: `${cwdPath}/${originalname.substring(
-                0,
-                originalname.lastIndexOf('.'),
-              )}`,
+              path: `${cwdPath}/${compressingConfig.pathKey}`,
             });
 
             resolve('success');
@@ -113,11 +114,14 @@ export class RemoteCompService {
     remoteCompData.name = name;
     remoteCompData.zhName = zhName;
     remoteCompData.currentVersion = version;
+    remoteCompData.path = path;
 
     const remoteCompVersionData = new RemoteCompVersion();
     remoteCompVersionData.name = name;
     remoteCompVersionData.version = version;
     remoteCompVersionData.path = path;
+
+    console.log(222, path);
 
     await queryRunner.startTransaction();
 
@@ -142,7 +146,7 @@ export class RemoteCompService {
     return;
   }
 
-  async findAll(query: GetRemoteComp) {
+  async findPage(query: GetRemoteComp) {
     const { pageNo, pageSize, name } = query;
     const take = pageSize || 10;
     const skip = ((pageNo || 1) - 1) * take;
@@ -168,11 +172,25 @@ export class RemoteCompService {
     // 动态添加搜索 如果没有值则不搜索
     qb = fuzzySearchUtils(qb, obj);
     const res = await qb.getManyAndCount();
+
     return {
       data: res[0],
       total: res[1],
       pageNo,
       pageSize,
+    };
+  }
+
+  async findAll() {
+    const qb = this.remoteCompRepository
+      .createQueryBuilder('RemoteComp')
+      .orderBy('RemoteComp.id', 'DESC');
+
+    // 如果没有值则不搜索
+    const res = await qb.getMany();
+
+    return {
+      data: res,
     };
   }
 
@@ -258,10 +276,7 @@ export class RemoteCompService {
           const remoteCompVersionData = new RemoteCompVersion();
           remoteCompVersionData.name = remoteCompRes.name;
           remoteCompVersionData.version = version;
-          remoteCompVersionData.path = `${cwdPath}/${originalname.substring(
-            0,
-            originalname.lastIndexOf('.'),
-          )}`;
+          remoteCompVersionData.path = `${cwdPath}/${compressingConfig.pathKey}`;
 
           await queryRunner.startTransaction();
 

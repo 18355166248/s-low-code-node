@@ -42,8 +42,13 @@ export class RemoteCompController {
   }
 
   @Get()
-  findAll(@Query() query: GetRemoteComp) {
-    return this.remoteCompService.findAll(query);
+  findPage(@Query() query: GetRemoteComp) {
+    return this.remoteCompService.findPage(query);
+  }
+
+  @Get('all')
+  findAll() {
+    return this.remoteCompService.findAll();
   }
 
   @Get(':id')
