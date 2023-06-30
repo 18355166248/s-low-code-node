@@ -121,8 +121,6 @@ export class RemoteCompService {
     remoteCompVersionData.version = version;
     remoteCompVersionData.path = path;
 
-    console.log(222, path);
-
     await queryRunner.startTransaction();
 
     try {
@@ -287,7 +285,6 @@ export class RemoteCompService {
             );
             // 更新组件版本号
             remoteCompRes.versions.push(newRemoteCompVersion);
-            console.log(222, remoteCompRes.versions);
             await queryRunner.manager.save(remoteCompRes);
             await queryRunner.commitTransaction();
           } catch (error) {
