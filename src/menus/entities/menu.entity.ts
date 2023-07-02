@@ -22,7 +22,7 @@ export class Menu {
   order: number;
 
   @Column()
-  acl: string; // 权限控制 CREATE, READ, UPDATE, DELETE, MANAGE
+  acl: string; // 权限控制 CREATE, READ, UPDATE, DELETE, MANAGE 参考 src\enum\action.enum.ts
 
   // 一个用户对应多个menu
   @ManyToMany(() => Role, (role) => role.menus)

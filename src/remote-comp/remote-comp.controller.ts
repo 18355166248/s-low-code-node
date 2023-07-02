@@ -17,6 +17,7 @@ import {
 } from './dto/create-remote-comp.dto';
 import { UpdateRemoteCompDto } from './dto/update-remote-comp.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { zipMimeType } from './config';
 
 @Controller('remote-comp')
 export class RemoteCompController {
@@ -26,7 +27,8 @@ export class RemoteCompController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: (req, { mimetype }, callback) => {
-        if (mimetype.indexOf('/zip') > -1) {
+        console.log(111, zipMimeType.includes(mimetype), mimetype);
+        if (zipMimeType.includes(mimetype)) {
           callback(null, true);
         } else {
           callback(new Error('只支持上传zip压缩包'), false);
@@ -60,7 +62,8 @@ export class RemoteCompController {
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: (req, { mimetype }, callback) => {
-        if (mimetype.indexOf('/zip') > -1) {
+        console.log(1112, zipMimeType.includes(mimetype), mimetype);
+        if (zipMimeType.includes(mimetype)) {
           callback(null, true);
         } else {
           callback(new Error('只支持上传zip压缩包'), false);

@@ -17,10 +17,13 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
     const response = ctx.getResponse(); // 获取请求上下文中的response对象
     const exceptionRes = exception.getResponse?.();
     console.log(6666, exception);
-    let status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR; // 获取异常状态码
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    try {
+      status =
+        exception instanceof HttpException
+          ? exception.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR; // 获取异常状态码
+    } catch (error) {}
 
     // 设置错误信息
     let message = exception.message
@@ -59,6 +62,7 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
       JSON.stringify(errorResponse),
       'HttpExceptionFilter',
     );
+    console.log(7777, status);
     // 设置返回的状态码， 请求头，发送错误信息
     response.status(status);
     response.header('Content-Type', 'application/json; charset=utf-8');
